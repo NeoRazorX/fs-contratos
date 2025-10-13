@@ -1,6 +1,7 @@
 <?php
 namespace FacturaScripts\Plugins\Contratos\Controller;
 
+use Exception;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\ExtendedController\ListController;
@@ -19,7 +20,8 @@ class ListContratoServicio extends ListController
     }
 
 
-    protected function createViews() {
+    protected function createViews(): void
+    {
 
         $this->createViewsContratoServicio();
     }
@@ -32,7 +34,7 @@ class ListContratoServicio extends ListController
      *
      * @return bool
      */
-    protected function execPreviousAction($action)
+    protected function execPreviousAction($action): bool
     {
         switch ($action) {
             case 'renew':
@@ -44,7 +46,7 @@ class ListContratoServicio extends ListController
 
 
 
-    protected function createViewsContratoServicio($viewName = "ListContratoServicio")
+    protected function createViewsContratoServicio($viewName = "ListContratoServicio"): void
     {
         $this->addView($viewName, "ContratoServicio", "Contratos");
 
@@ -74,8 +76,9 @@ class ListContratoServicio extends ListController
      * Add an modal button for renumber entries
      *
      * @param string $viewName
+     * @throws Exception
      */
-    protected function addRenewButton(string $viewName)
+    protected function addRenewButton(string $viewName): void
     {
         $this->addButton($viewName, [
             'action' => 'renew',
@@ -113,7 +116,7 @@ class ListContratoServicio extends ListController
 
         foreach ($codes as $code){
             $contrato = new ContratoServicio();
-            $contrato->loadFromCode($code);
+            $contrato->load($code);
 
             if ($contrato->hasErrorsToRenew()){
                 $hasError = true;
@@ -131,14 +134,14 @@ class ListContratoServicio extends ListController
 
         foreach ($codes as $code){
             $contrato = new ContratoServicio();
-            $contrato->loadFromCode($code);
+            $contrato->load($code);
             $factura = null;
 
             if (count($res) > 0){
                 foreach ($res as $r){
                     if (isset($r['codcliente']) && $r['codcliente'] === $contrato->codcliente && isset($r['idfactura'])){
                         $factura = new FacturaCliente();
-                        $factura->loadFromCode($r['idfactura']);
+                        $factura->load($r['idfactura']);
                         break;
                     }
                 }

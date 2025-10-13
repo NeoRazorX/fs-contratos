@@ -2,11 +2,12 @@
 namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\KernelException;
 
 class RenewContratoServicio extends Controller {
 
-    public $renovados = [];
-    public $noRenovados = [];
+    public array $renovados = [];
+    public array $noRenovados = [];
 
     public function getPageData(): array
     {
@@ -18,13 +19,17 @@ class RenewContratoServicio extends Controller {
         return $data;
     }
 
-    public function privateCore(&$response, $user, $permissions)
+    /**
+     * @throws KernelException
+     */
+    public function privateCore(&$response, $user, $permissions): void
     {
         parent::privateCore($response, $user, $permissions);
         $this->init();
     }
 
-    private function init(){
+    private function init(): void
+    {
         $res = $this->request->query->get('params');
 
         $this->renovados = array_filter($res, function ($c){ return $c['status'] === 'ok'; });

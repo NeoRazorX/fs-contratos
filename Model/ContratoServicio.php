@@ -2,20 +2,23 @@
 namespace FacturaScripts\Plugins\Contratos\Model;
 
 use Exception;
-use FacturaScripts\Core\Base\Calculator;
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Lib\ListFilter\PeriodTools;
-use FacturaScripts\Core\Model\Base\ModelClass;
-use FacturaScripts\Core\Model\Base\ModelTrait;
 use FacturaScripts\Core\Model\Producto;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Accounting\InvoiceToAccounting;
+use FacturaScripts\Core\Template\ModelClass;
+use FacturaScripts\Core\Template\ModelTrait;
+use FacturaScripts\Dinamic\Lib\Calculator;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
 
 class ContratoServicio extends ModelClass
 {
 
-    use ModelTrait;
+    use ModelTrait {
+        all as protected traitAll;
+    }
 
     public $idcontrato;
     public $codcliente;
@@ -67,7 +70,7 @@ class ContratoServicio extends ModelClass
      */
     public static function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50): array
     {
-        $modelList = parent::all($where, $order, $offset, $limit);
+        $modelList = self::traitAll($where, $order, $offset, $limit);
         $modelListEdited = [];
 
         if(count($modelList) > 0){
@@ -128,22 +131,22 @@ class ContratoServicio extends ModelClass
         $error = false;
 
         if (strlen($this->codcliente) === 0){
-            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un cliente vinculado.');
+            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un cliente vinculado.');
             $error = true;
         }
 
         if (strlen($this->idproducto) === 0){
-            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un producto vinculado.');
+            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un producto vinculado.');
             $error = true;
         }
 
         if ($this->periodo === '------'){
-            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido un periodo de renovación.');
+            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido un periodo de renovación.');
             $error = true;
         }
 
         if (strlen($this->fecha_renovacion) === 0){
-            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido una fecha de renovación');
+            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido una fecha de renovación');
             $error = true;
         }
 
@@ -217,7 +220,7 @@ class ContratoServicio extends ModelClass
         $factura = new FacturaCliente();
 
         $cliente = new Cliente();
-        $cliente->loadFromCode($this->codcliente);
+        $cliente->load($this->codcliente);
         $factura->setSubject($cliente);
         $factura->fecha = $invoiceDate;
 
@@ -259,7 +262,7 @@ class ContratoServicio extends ModelClass
     public function addLineToInvoice(FacturaCliente $factura, string $renovationDate): bool
     {
         $producto = new Producto();
-        $producto->loadFromCode($this->idproducto);
+        $producto->load($this->idproducto);
 
         $linea = $factura->getNewProductLine($producto->referencia);
 

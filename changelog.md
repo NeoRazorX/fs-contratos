@@ -1,4 +1,9 @@
-2025-07-25: Versión 1.8
+2025-10-13: Versión 1.9
+
+     Mejoras:
+        * Compatibilidad con la versión 2025
+
+2025-10-13: Versión 1.8
         
     Correcciones:
         * Quitamos fichero cron.php ya que no se usa esa funcionalidad

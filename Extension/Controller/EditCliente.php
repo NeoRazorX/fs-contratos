@@ -22,9 +22,10 @@ class EditCliente
         };
     }
 
+
     public function loadData(): Closure
     {
-        return function ($viewName, $view) {
+        return function ($viewName, $view): void {
             if ($viewName === 'ListContratoServicio') {
                 $code = $this->getViewModelValue($this->getMainViewName(), 'codcliente');
                 $where = [new DataBaseWhere('codcliente', $code)];
