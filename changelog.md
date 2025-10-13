@@ -1,3 +1,9 @@
+2025-07-25: Versión 1.8
+        
+    Correcciones:
+        * Quitamos fichero cron.php ya que no se usa esa funcionalidad
+        * Cambio clase Init del plugin
+
 2025-07-25: Versión 1.7
 
     Mejoras:
